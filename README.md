@@ -1,1 +1,0 @@
-# Projekta_darbs_00
