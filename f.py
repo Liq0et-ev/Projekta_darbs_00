@@ -3,7 +3,8 @@ import time
 import os
 import json
 from bs4 import BeautifulSoup
-
+import random
+from datetime import datetime
 SEEN_FILE = "seen_ads.json"
 
 class ComponentChoose:
@@ -93,20 +94,34 @@ def save_seen():
     with open(SEEN_FILE, "w") as f:
         json.dump(list(seen_ads), f)
 
-print("Sāk meklēšanu izvēlētajā kategorijā. Jauni sludinājumi tiks pārbaudīti ik pēc 60 sekundēm.")
+print("Sāk meklēšanu izvēlētajā kategorijā. Jauni sludinājumi tiks pārbaudīti ik pēc 14-54 sekundēm.")
 
 while True:
     try:
         matches = fetch_ads()
         if matches:
             for title, link in matches:
-                print("\nJauns sludinājums:")
-                print(title)
-                print(link)
-            save_seen()
+                if link == matches:
+                    current_time = datetime.now()
+                    file1 = open("New_offers.txt","w")
+                    L = ["Jauns sludinājums:"]
+                    file1.write(L)
+                    file1.write(title)
+                    file1.write(link)
+                    file1.write(current_time)
+                    print("\nJauns sludinājums:")
+                    print(title)
+                    print(link)
+                    print(current_time)
+                
+                save_seen()
         else:
             print("Jaunu sludinājumu nav.")
-        time.sleep(60)
+            time_sleep = random.randint(15,54)
+        time.sleep(time_sleep)
+        
+        print(current_time)
     except Exception as e:
         print("Kļūda:", e)
         time.sleep(60)
+        
