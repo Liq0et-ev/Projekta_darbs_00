@@ -1,34 +1,30 @@
 import requests
 import time
-import os
-import json
 from bs4 import BeautifulSoup
+import threading
 import random
-from datetime import datetime
-SEEN_FILE = "seen_ads.json"
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 class ComponentChoose:
-    def day(self, component_number):
-        default = None
-        return getattr(self, f'case_{component_number}', lambda: default)()
+    def component(self, component_number):
+        return getattr(self, f'case_{component_number}')()
 
     def case_1(self):
-        return "https://www.ss.lv/ru/electronics/computers/completing-pc/cpu/"
+        return "https://www.ss.lv/lv/electronics/computers/completing-pc/cpu/search-result/?q="
 
     def case_2(self):
-        return "https://www.ss.lv/ru/electronics/computers/completing-pc/hdd/"
+        return "https://www.ss.lv/lv/electronics/computers/completing-pc/hdd/search-result/?q="
 
     def case_3(self):
-        return "https://www.ss.lv/ru/electronics/computers/completing-pc/hdd/"
+        return "https://www.ss.lv/lv/electronics/computers/completing-pc/ssd/search-result/?q="
 
     def case_4(self):
-        return "https://www.ss.lv/ru/electronics/computers/completing-pc/ram/"
+        return "https://www.ss.lv/lv/electronics/computers/completing-pc/ram/search-result/?q="
     
     def case_5(self):
-        return "https://www.ss.lv/ru/electronics/computers/completing-pc/video/"
-    
-    def case_6(self):
-        return "https://www.ss.lv/ru/electronics/computers/completing-pc/network-cards/"
+        return "https://www.ss.com/lv/electronics/computers/completing-pc/video/search-result/?q="
 
 print("Izvēlies komponentes kategoriju:")
 print("1 - CPU")
@@ -36,92 +32,86 @@ print("2 - HDD")
 print("3 - SSD")
 print("4 - RAM")
 print("5 - Videokartes")
-print("6 - Tīkla kartes")
+
+a = ["CPU", "HDD", "SSD", "RAM", "Videokartes"]
 
 my_switch = ComponentChoose()
 try:
-    user_choice = int(input("Ievadi komponentes numuru (1-6): "))
-    CATEGORY_URL = my_switch.day(user_choice)
+    user_choice = int(input("Ievadi komponentes numuru (1-5): "))
+    CATEGORY_URL = my_switch.component(user_choice)
     if not CATEGORY_URL:
         print("Kļūda: neatpazīts numurs.")
         exit()
-    print("Izvēlēta saite:", CATEGORY_URL)
+    
+    print("Izvēlēta kategorija:", a[user_choice-1])
 except ValueError:
     print("Lūdzu ievadi derīgu numuru.")
     exit()
 
 user_keywords = input("Ievadi atslēgvārdus meklēšanai (atdalīt ar komatu): ")
-KEYWORDS = [kw.strip().lower() for kw in user_keywords.split(",") if kw.strip()]
 
-if not KEYWORDS:
-    print("Nav ievadīts neviens atslēgvārds. Programma beidzas.")
-    exit()
+print("Meklēsim pēc atslēgvārdiem:", user_keywords)
+CATEGORY_URL = CATEGORY_URL + user_keywords
 
-print("Meklēsim pēc atslēgvārdiem:", KEYWORDS)
-
-if os.path.exists(SEEN_FILE):
-    with open(SEEN_FILE, "r") as f:
-        seen_ads = set(json.load(f))
-else:
-    seen_ads = set()
-
-def fetch_ads():
-    resp = requests.get(CATEGORY_URL, timeout=15)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
-    rows = soup.select("table.list tr[id]")
-
-    new_matches = []
-
-    for row in rows:
-        ad_id = row.get("id")
-        if ad_id in seen_ads:
-            continue
-        seen_ads.add(ad_id)
-
-        title_cell = row.select_one("td.msg2")
-        if not title_cell:
-            continue
-
-        title_text = title_cell.get_text(strip=True).lower()
-        if any(kw in title_text for kw in KEYWORDS):
-            link = "https://www.ss.lv" + title_cell.find("a")["href"]
-            new_matches.append((title_text, link))
-
-    return new_matches
-
-def save_seen():
-    with open(SEEN_FILE, "w") as f:
-        json.dump(list(seen_ads), f)
+def product_checker():
+    page = requests.get(CATEGORY_URL)
+    if page.status_code != 200:
+        print ("Error unexpected status", {page.status_code})
+        return[]
+    
+    
+    page_content = BeautifulSoup(page.content, "html.parser")
+    found_products = page_content.find_all(class_= "msga2-o pp6")
+    return found_products
 
 print("Sāk meklēšanu izvēlētajā kategorijā. Jauni sludinājumi tiks pārbaudīti ik pēc 14-54 sekundēm.")
 
-while True:
-    try:
-        matches = fetch_ads()
-        if matches:
-            for title, link in matches:
-                if link == matches:
-                    current_time = datetime.now()
-                    file1 = open("New_offers.txt","w")
-                    L = ["Jauns sludinājums:"]
-                    file1.write(L)
-                    file1.write(title)
-                    file1.write(link)
-                    file1.write(current_time)
-                    print("\nJauns sludinājums:")
-                    print(title)
-                    print(link)
-                    print(current_time)
-                
-                save_seen()
+def cleaner(matches):
+    ans = []
+    c = 0
+    if (user_choice == 4): maxi = 6
+    elif(user_choice == 5): maxi = 5
+    else: maxi = 4
+    for i in matches:
+        text = list(i.stripped_strings)
+        if (c == 0): ans.append("")
+        if (len(text) > 1):
+            for j in text:
+                if(j[0] == "<"): continue
+                ans[len(ans)-1] = ans[len(ans)-1] + j + " "
         else:
-            print("Jaunu sludinājumu nav.")
-            time_sleep = random.randint(15,54)
-        time.sleep(time_sleep)
-        
-        print(current_time)
-    except Exception as e:
-        print("Kļūda:", e)
-        time.sleep(60)
-        
+            for j in text:
+                ans[len(ans)-1] = ans[len(ans)-1] + j + " "
+        c = c+1
+        if (c == maxi): c = 0
+    return ans
+
+
+stop = False
+r = random.randint(10,30)
+
+def wait():
+    global stop
+    while True:
+        user_input = input()
+        if user_input.strip().lower() == 'stop':
+            stop = True
+            break
+
+threading.Thread(target=wait, daemon=True).start()
+
+while not stop:
+    matches = product_checker()
+    matches = cleaner(matches)
+
+    ans = '\n'.join(matches)
+    ans1 = MIMEMultipart()
+    ans1.attach(MIMEText(ans, 'plain', 'utf-8'))
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login('testovicstest@gmail.com', 'oxcu zlbt rvlq cgqd')
+    server.sendmail('testovicstest@gmail.com', 'testovicstest@gmail.com', ans1.as_string())
+    time.sleep(r)
+
+server.quit()
