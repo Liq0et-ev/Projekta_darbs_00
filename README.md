@@ -62,8 +62,8 @@ from email.mime.multipart <b> import MIMEMultipart</b> - <i> e-pasta ziņojumu f
     1.Klase <b>"ComponentChoose"</b>, kas pilda pārslēgšanas (switch-case) struktūru
     Šī klase uzglabā metodes ar dažādu kategoriju URL saitēm, kas ļauj lietotājam izvēlēties, vienu no piecām komponentēm kuru tas vēlas meklēt(HDD,SSD, RAM, Video kāerti un CPU) </br>
     2.Saraksts <b>"list"</b>, kurā glabajas komponentu nosaukumi.</br>
-    3.Funkcija <b>"cleaner"</b>, kas veido strukturētu datu no atrastajiem HTML elemetiem
-    4.Funkcija <b>"product_checker"</b>, kas veido savienojumu ar mājaslapu un kas saņem no tās visus nepieciešamos datus
-    5.Funkcija <b>"wait"</b>, kas darbojas programmas fonā, uztverot lietotāja tastatūras ievadi, un, apstādinot visas programmas darbību pēc lietotāja ievades
+    3.Funkcija <b>"cleaner"</b>, kas veido strukturētu datu no atrastajiem HTML elemetiem</br>
+    4.Funkcija <b>"product_checker"</b>, kas veido savienojumu ar mājaslapu un kas saņem no tās visus nepieciešamos datus</br>
+    5.Funkcija <b>"wait"</b>, kas darbojas programmas fonā, uztverot lietotāja tastatūras ievadi, un, apstādinot visas programmas darbību pēc lietotāja ievades</br>
 
 <b><h2>Saite uz video:</h2> <h3><i><a>https://youtu.be/JPYUYuaL6aM</a></i></h3><b>
