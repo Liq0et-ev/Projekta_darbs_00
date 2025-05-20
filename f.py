@@ -77,7 +77,6 @@ def cleaner(matches):
         if (c == 0): ans.append("")
         if (len(text) > 1):
             for j in text:
-                if(j[0] == "<"): continue
                 ans[len(ans)-1] = ans[len(ans)-1] + j + " "
         else:
             for j in text:
