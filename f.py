@@ -64,7 +64,7 @@ def product_checker():
     found_products = page_content.find_all(class_= "msga2-o pp6")
     return found_products
 
-print("Sāk meklēšanu izvēlētajā kategorijā. Jauni sludinājumi tiks pārbaudīti ik pēc 14-54 sekundēm.")
+print("Sāk meklēšanu izvēlētajā kategorijā. Jauni sludinājumi tiks pārbaudīti ik pēc 10-30 sekundēm.")
 
 def cleaner(matches):
     ans = []
