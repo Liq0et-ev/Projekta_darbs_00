@@ -64,4 +64,4 @@ from email.mime.multipart <b> import MIMEMultipart</b> - <i> e-pasta zinojumu fo
     2.Saraksts <b>"list"</b>, kurā glabajas komponentu nosaukumi.</br>
     3.Funkcija <b>"cleaner"</b>, kas veido strukturētu datu no atrastajiem HTML  elemetiem 
 
-
+<b><h2>Saite uz video:</h2> <h3><i><a>https://youtu.be/JPYUYuaL6aM</a></i></h3><b>
