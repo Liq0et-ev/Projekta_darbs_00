@@ -65,4 +65,3 @@ from email.mime.multipart <b> import MIMEMultipart</b> - <i> e-pasta zinojumu fo
     3.Funkcija <b>"cleaner"</b>, kas veido strukturētu datu no atrastajiem HTML  elemetiem 
 
 
-https://mailtrap.io/blog/python-send-email-gmail/
