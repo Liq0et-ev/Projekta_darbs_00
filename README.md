@@ -4,7 +4,7 @@ Atradit un nosutit no portāla ss.lv pedējos piedavajumus par datora komponent 
 
 Atrast informaciju par izvelētu komponenta veidu, piemēram -> video -> 3060.
 
-Atsutīt katras 14-54 lietotāja gmail informaciju par pedējiem piedavajumiem, kuri lietotājs bijis prasīts.
+Atsutīt katras 10-30 lietotāja gmail informaciju par pedējiem piedavajumiem, kuri lietotājs bijis prasīts.
 
 <b><h2>Python bibliotekas un tas nepieciešamība projekta:</h2></b>
 
